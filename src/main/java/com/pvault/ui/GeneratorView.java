@@ -66,18 +66,23 @@ public class GeneratorView extends VBox {
         Label lengthTitle = new Label("Password Length:");
         lengthTitle.setStyle("-fx-font-weight: bold; -fx-text-fill: #e2e8f0;");
 
-        lengthSlider = new Slider(6, 48, 16);
+        lengthSlider = new Slider(15, 64, 16);
         lengthSlider.setShowTickLabels(true);
         lengthSlider.setShowTickMarks(true);
-        lengthSlider.setMajorTickUnit(6);
+        lengthSlider.setMajorTickUnit(7);
         lengthSlider.setBlockIncrement(1);
 
         lengthLabel = new Label("16 characters");
         lengthLabel.setStyle("-fx-text-fill: #38bdf8; -fx-font-weight: bold;");
 
+        // UI Event Listener: dynamically regenerates when slider length changes
         lengthSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
-            int val = newVal.intValue();
-            lengthLabel.setText(val + " characters");
+            int oldInt = oldVal.intValue();
+            int newInt = newVal.intValue();
+            lengthLabel.setText(newInt + " characters");
+            if (oldInt != newInt) {
+                generatePassword();
+            }
         });
 
         HBox lengthHeader = new HBox(10, lengthTitle, lengthLabel);
@@ -100,6 +105,13 @@ public class GeneratorView extends VBox {
         rbAll.setSelected(true);
         rbAll.setStyle("-fx-text-fill: #cbd5e1;");
 
+        // UI Event Listener: dynamically regenerates when character pool option changes
+        poolGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal != null) {
+                generatePassword();
+            }
+        });
+
         VBox radioBox = new VBox(8, rbLetters, rbLettersNumbers, rbAll);
 
         optionsCard.getChildren().addAll(lengthHeader, lengthSlider, poolTitle, radioBox);
@@ -117,13 +129,13 @@ public class GeneratorView extends VBox {
         if (rbLetters.isSelected()) {
             option = GeneratorService.PoolOption.LETTERS_ONLY;
         } else if (rbLettersNumbers.isSelected()) {
-            option = GeneratorService.PoolOption.LETTERS_AND_NUMBERS;
+            option = GeneratorService.PoolOption.LETTERS_NUMBERS;
         } else {
-            option = GeneratorService.PoolOption.LETTERS_NUMBERS_AND_SYMBOLS;
+            option = GeneratorService.PoolOption.LETTERS_NUMBERS_SYMBOLS;
         }
 
         // Call Module 3
-        String pass = generatorService.generate(length, option);
+        String pass = generatorService.generatePassword(length, option);
         resultField.setText(pass);
     }
 

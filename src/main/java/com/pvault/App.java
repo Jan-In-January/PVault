@@ -6,7 +6,6 @@ import com.pvault.service.GeneratorService;
 import com.pvault.service.VaultService;
 import com.pvault.service.mock.MockAnalyzerService;
 import com.pvault.service.mock.MockAuthService;
-import com.pvault.service.mock.MockGeneratorService;
 import com.pvault.service.mock.MockVaultService;
 import com.pvault.ui.LoginView;
 import com.pvault.ui.MainDashboardView;
@@ -24,10 +23,10 @@ import java.net.URL;
  */
 public class App extends Application {
 
-    // Services (Currently mock implementations; teammates can plug their real classes here)
+    // Services (Real GeneratorService integrated for Module 3)
     private final AuthService authService = new MockAuthService();
     private final VaultService vaultService = new MockVaultService();
-    private final GeneratorService generatorService = new MockGeneratorService();
+    private final GeneratorService generatorService = new GeneratorService();
     private final AnalyzerService analyzerService = new MockAnalyzerService();
 
     private StackPane rootContainer;
