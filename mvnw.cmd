@@ -60,15 +60,23 @@ set ERROR_CODE=0
 @REM ==== START VALIDATION ====
 if exist "%JAVA_HOME%\bin\java.exe" goto OkJHome
 
-for /f "tokens=*" %%I in ('where java 2^>nul') do (
-    if exist "%%~dpIjavac.exe" (
-        set "JAVABIN=%%~dpI"
-        goto FoundJava
+@REM Attempt to find java home via PowerShell Get-Command
+for /f "usebackq delims=" %%I in (`powershell -NoProfile -ExecutionPolicy Bypass -Command "try { $j = (Get-Command java -ErrorAction Stop).Source; (Get-Item $j).Directory.Parent.FullName } catch {}"`) do (
+    if exist "%%~I\bin\java.exe" (
+        set "JAVA_HOME=%%~I"
+        goto OkJHome
     )
 )
-:FoundJava
-if defined JAVABIN (
-    for %%I in ("%JAVABIN%..") do set "JAVA_HOME=%%~fI"
+
+@REM Fallback loop through where java
+for /f "tokens=*" %%I in ('where java 2^>nul') do (
+    if exist "%%~dpIjavac.exe" (
+        set "JAVA_HOME=%%~dpI.."
+        goto OkJHome
+    )
+    if exist "%%~dpIjava.exe" (
+        set "JAVA_HOME=%%~dpI.."
+    )
 )
 
 :OkJHome
