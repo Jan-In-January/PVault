@@ -1,15 +1,11 @@
+// Made by ARWIN JOHN A. ALAB-AB pogi
+
 package com.pvault.service.mock;
 
 import com.pvault.service.AnalyzerService;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * MOCK / INITIAL IMPLEMENTATION of AnalyzerService
- * -------------------------------------------------
- * Fulfills the loop, switch, and if-else requirements from project-context.md.
- * Teammate for Module 4 can customize scoring logic or expand feedback rules.
- */
 public class MockAnalyzerService implements AnalyzerService {
 
     @Override
@@ -23,22 +19,27 @@ public class MockAnalyzerService implements AnalyzerService {
         boolean hasDigit = false;
         boolean hasSymbol = false;
 
-        // Requirement: Loop scans each character
-        for (char c : password.toCharArray()) {
-            if (Character.isUpperCase(c)) hasUpper = true;
-            else if (Character.isLowerCase(c)) hasLower = true;
-            else if (Character.isDigit(c)) hasDigit = true;
-            else hasSymbol = true;
+        for (int i = 0; i < password.length(); i++) {
+            char ch = password.charAt(i);
+
+            if (Character.isUpperCase(ch)) {
+                hasUpper = true;
+            } else if (Character.isLowerCase(ch)) {
+                hasLower = true;
+            } else if (Character.isDigit(ch)) {
+                hasDigit = true;
+            } else {
+                hasSymbol = true; 
+            }
         }
 
         int score = 0;
         List<String> feedback = new ArrayList<>();
 
-        // Requirement: If-else flags specific weaknesses
         if (password.length() >= 8) {
             score++;
         } else {
-            feedback.add("Too short: minimum 8 characters recommended.");
+            feedback.add("Too short! minimum 8 characters recommended.");
         }
 
         if (password.length() >= 14) {
@@ -54,7 +55,7 @@ public class MockAnalyzerService implements AnalyzerService {
         if (hasDigit) {
             score++;
         } else {
-            feedback.add("Add at least one numeric digit (0-9).");
+            feedback.add("Add at least one digit (0-9).");
         }
 
         if (hasSymbol) {
@@ -66,7 +67,6 @@ public class MockAnalyzerService implements AnalyzerService {
         StrengthLevel level;
         double percentage;
 
-        // Requirement: Switch converts score into strength level
         switch (score) {
             case 5:
                 level = StrengthLevel.VERY_STRONG;
@@ -87,7 +87,7 @@ public class MockAnalyzerService implements AnalyzerService {
         }
 
         if (feedback.isEmpty()) {
-            feedback.add("Excellent! This password is very strong and resilient.");
+            feedback.add("Excellent! This password is very strong.");
         }
 
         return new AnalysisResult(level, percentage, feedback);
