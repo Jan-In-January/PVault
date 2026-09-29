@@ -2,13 +2,19 @@ package com.pvault.service.mock;
 
 import com.pvault.service.AuthService;
 
-/**
- * MOCK IMPLEMENTATION of AuthService
- * -----------------------------------
- * This provides immediate working behavior so the UI can run and be previewed.
- * The teammate in charge of Module 1 can replace this or implement the real AuthService
- * with SHA-256 hashing and file persistence.
- */
+/*
+Wayne :>>>>>>
+
+What's done:
+- Authentication
+- Password lockout
+
+To do:
+- add json for storing hashed master password
+- add auth generator for lockout mechanism
+- account sign up
+*/
+
 public class MockAuthService implements AuthService {
 
     private static final String DEFAULT_MASTER_PASSWORD = "admin";
