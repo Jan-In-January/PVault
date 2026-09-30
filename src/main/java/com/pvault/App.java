@@ -1,8 +1,9 @@
 package com.pvault;
-
+import com.pvault.db.DatabaseManager;
 import com.pvault.service.AnalyzerService;
 import com.pvault.service.AuthService;
 import com.pvault.service.GeneratorService;
+import com.pvault.service.SqliteVaultService;
 import com.pvault.service.VaultService;
 import com.pvault.service.mock.MockAnalyzerService;
 import com.pvault.service.mock.MockAuthService;
@@ -25,7 +26,7 @@ public class App extends Application {
 
     // Services (Real GeneratorService integrated for Module 3)
     private final AuthService authService = new MockAuthService();
-    private final VaultService vaultService = new MockVaultService();
+    private final VaultService vaultService = createVaultService();
     private final GeneratorService generatorService = new GeneratorService();
     private final AnalyzerService analyzerService = new MockAnalyzerService();
 
@@ -67,7 +68,15 @@ public class App extends Application {
         rootContainer.getChildren().setAll(dashboardView);
     }
 
+    // TEMPORARY: unlocks with the mock master password until Login is wired to the vault (Phase 3)
+    private static VaultService createVaultService() {
+        SqliteVaultService service = new SqliteVaultService();
+        service.unlock("admin".toCharArray());
+        return service;
+    }
+
     public static void main(String[] args) {
+        DatabaseManager.initialize();
         launch(args);
     }
 }

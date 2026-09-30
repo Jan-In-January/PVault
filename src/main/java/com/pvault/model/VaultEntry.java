@@ -19,6 +19,15 @@ public class VaultEntry {
         this.category = (category == null || category.isBlank()) ? "General" : category;
     }
 
+    // Used when loading an existing entry from the database (keeps its saved id)
+    public VaultEntry(String id, String siteName, String username, String encryptedPassword, String category) {
+        this.id = id;
+        this.siteName = siteName;
+        this.username = username;
+        this.encryptedPassword = encryptedPassword;
+        this.category = (category == null || category.isBlank()) ? "General" : category;
+    }
+
     public String getId() {
         return id;
     }
