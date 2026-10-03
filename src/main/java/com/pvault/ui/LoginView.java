@@ -6,6 +6,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 
+import java.util.function.Consumer;
+
 /**
  * MODULE 1 UI: Master Login Screen
  * --------------------------------
@@ -15,12 +17,12 @@ import javafx.scene.layout.VBox;
 public class LoginView extends VBox {
 
     private final AuthService authService;
-    private final Runnable onLoginSuccess;
+    private final Consumer<String> onLoginSuccess;
     private final Label statusLabel;
     private final PasswordField passwordField;
     private final Button loginButton;
 
-    public LoginView(AuthService authService, Runnable onLoginSuccess) {
+    public LoginView(AuthService authService, Consumer<String> onLoginSuccess) {
         this.authService = authService;
         this.onLoginSuccess = onLoginSuccess;
 
@@ -56,6 +58,15 @@ public class LoginView extends VBox {
         getChildren().add(card);
     }
 
+    /** Called whenever the login screen is shown again (e.g. after Lock Vault). */
+    public void reset() {
+        passwordField.clear();
+        if (!authService.isLockedOut()) { // keep the lockout message visible if locked out
+            statusLabel.setText("");
+            passwordField.requestFocus();
+        }
+    }
+
     private void handleLogin() {
         String enteredPassword = passwordField.getText();
 
@@ -73,7 +84,8 @@ public class LoginView extends VBox {
         if (success) {
             statusLabel.setText("Access granted!");
             statusLabel.setStyle("-fx-text-fill: #10b981; -fx-font-weight: bold;");
-            onLoginSuccess.run();
+            onLoginSuccess.accept(enteredPassword);
+            passwordField.clear();
         } else {
             int remaining = authService.getRemainingAttempts();
             if (authService.isLockedOut()) {

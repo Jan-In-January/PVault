@@ -35,6 +35,11 @@ public class SqliteVaultService implements VaultService {
         }
     }
 
+    /** Forgets the AES key (call on logout). */
+    public void lock() {
+        this.key = null;
+    }
+
     private SecretKey requireKey() {
         if (key == null) {
             throw new IllegalStateException("Vault is locked. Call unlock() first.");

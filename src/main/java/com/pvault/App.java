@@ -26,7 +26,7 @@ public class App extends Application {
 
     // Services (Real GeneratorService integrated for Module 3)
     private final AuthService authService = new MockAuthService();
-    private final VaultService vaultService = createVaultService();
+    private final SqliteVaultService vaultService = new SqliteVaultService();
     private final GeneratorService generatorService = new GeneratorService();
     private final AnalyzerService analyzerService = new MockAnalyzerService();
 
@@ -61,18 +61,14 @@ public class App extends Application {
     }
 
     private void showLogin() {
+        vaultService.lock();
+        loginView.reset();
         rootContainer.getChildren().setAll(loginView);
     }
 
-    private void showDashboard() {
+    private void showDashboard(String masterPassword) {
+        vaultService.unlock(masterPassword.toCharArray());
         rootContainer.getChildren().setAll(dashboardView);
-    }
-
-    // TEMPORARY: unlocks with the mock master password until Login is wired to the vault (Phase 3)
-    private static VaultService createVaultService() {
-        SqliteVaultService service = new SqliteVaultService();
-        service.unlock("admin".toCharArray());
-        return service;
     }
 
     public static void main(String[] args) {
